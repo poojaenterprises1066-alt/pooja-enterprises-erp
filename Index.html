@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<title>Pooja Enterprises</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;overflow-x:hidden;overflow-y:auto;background:#f1f5f9;color:#0f172a;font:16px Arial,sans-serif}
+header{padding:14px 24px;background:linear-gradient(110deg,#0f766e,#115e59);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 3px 12px #0f172a20;font-size:14px;font-weight:700;min-height:76px}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}.brand-mark{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#ffffff20;border:1px solid #ffffff45;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;letter-spacing:.5px}.brand-copy{min-width:0}.brand-name{font-size:clamp(18px,2vw,24px);font-weight:800;letter-spacing:.2px;line-height:1.2}.brand-subtitle{font-size:12px;color:#d1fae5;margin-top:4px;letter-spacing:1.2px;text-transform:uppercase}.header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+main{max-width:none;width:100%;margin:0;padding:14px}.panel{background:white;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px #0001}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}label{display:block;font-size:13px;color:#475569;margin-bottom:5px}
+input{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+.full{grid-column:1/-1}.total{font-size:24px;font-weight:bold;color:#0f766e;margin:12px 0}
+button{padding:12px;border:0;border-radius:9px;font-size:15px;font-weight:bold;cursor:pointer}.save{background:#0f766e;color:white;width:100%;margin-top:10px}.secondary{background:#e2e8f0;color:#334155}
+.entry{border-top:1px solid #e2e8f0;padding:12px 10px;display:flex;justify-content:space-between;gap:10px;border-radius:8px;margin:5px 0}.entry.credit-entry{background:#ecfdf5;border-left:4px solid #16a34a}.entry.debit-entry{background:#fef2f2;border-left:4px solid #dc2626}.entry.credit-entry .amount{color:#15803d}.entry.debit-entry .amount{color:#b91c1c}.entry small{color:#64748b}.amount{font-weight:bold;text-align:right}
+.empty{text-align:center;color:#64748b;padding:18px}
+.pdf-btn{background:#0f172a;color:white;margin:0 0 12px;width:100%}
+@media print{.filter-row,.filter-tools{display:none!important}body{background:white}header{background:white;color:#000;border-bottom:1px solid #aaa}main{max-width:none;padding:0}.panel{box-shadow:none;border:0;padding:8px;margin:0}.save,.pdf-btn{display:none!important}body.print-export main>section:first-child{display:none!important}body.print-export main>section:last-child{display:block!important}table{width:100%;min-width:0;font-size:10px}th,td{padding:5px;white-space:normal;overflow-wrap:anywhere}.table-wrap{overflow:visible}h3{margin-top:8px}.entry{display:none}}.filter-row input{font-size:12px;padding:6px 4px;min-width:55px;border-radius:5px}.filter-row td{padding:4px;background:#f8fafc}.filter-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}.filter-tools button{padding:7px 10px;font-size:12px}.filter-count{font-size:12px;color:#64748b}.table-wrap{overflow-x:auto;overflow-y:auto;max-height:58vh;overscroll-behavior:contain}table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}th,td{padding:10px 8px;border:1px solid #cbd5e1;text-align:left;white-space:nowrap}th{background:#e2e8f0;color:#334155}thead th{position:sticky;top:0;z-index:5}thead .filter-row td{position:sticky;top:38px;z-index:4;background:#f8fafc}tr.credit-row td{background:#ecfdf5;color:#166534}tr.debit-row td{background:#fef2f2;color:#991b1b}tbody tr[data-row-edit]{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(37,99,235,.18)}tbody tr[data-row-edit]:active td{filter:brightness(.94)}
+@media(max-width:650px){header{padding:12px 14px;min-height:66px;gap:8px}.brand-mark{width:38px;height:38px;flex-basis:38px;border-radius:10px;font-size:14px}.brand{gap:9px}.brand-subtitle{font-size:10px;letter-spacing:.7px}.header-actions{gap:6px}#logout{padding:8px 9px;font-size:12px}.role-tag{font-size:9px;padding:5px 7px}}@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.grid{grid-template-columns:1fr}main{padding:8px}.panel{padding:10px}}
+.delete-entry{padding:4px 7px;font-size:10px;background:#fee2e2;color:#991b1b}.delete-col{display:none}body:not(.print-export) .delete-col{display:table-cell}body.print-export .delete-col{display:none!important}
+/* App access control */
+#loginScreen{position:fixed;inset:0;z-index:9999;background:#f1f5f9;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:#fff;padding:26px;border-radius:16px;box-shadow:0 8px 28px #0002;width:min(100%,390px)}
+.login-card h2{margin:0 0 8px;color:#0f766e}.login-card p{color:#64748b;font-size:14px}
+.login-card input{margin:8px 0 12px}.login-card button{width:100%;background:#0f766e;color:white}
+#loginError{color:#b91c1c;min-height:20px;font-size:14px}.role-tag{font-size:13px;background:#ffffff22;padding:5px 9px;border-radius:8px;margin-left:10px}
+#logout{background:#ffffffeb;color:#115e59;font-size:13px;padding:9px 13px;border-radius:9px}#logout:hover{background:#fff}.role-tag{margin:0;font-weight:700;font-size:11px;letter-spacing:.4px;background:#ffffff24;border:1px solid #ffffff35;color:#fff;padding:6px 9px;border-radius:999px}
+@media print{@page{size:A4 landscape;margin:27mm 8mm 8mm}body{background:white}body.print-export main{max-width:none;width:100%;padding:0}body.print-export .panel{padding:0;margin:0;box-shadow:none;border:0}body.print-export header{position:fixed;top:-19mm;left:0;right:0;height:18mm;min-height:0;padding:2mm 4mm;font-size:14px;font-weight:700;z-index:1000;background:#fff!important;color:#111!important;border-bottom:1px solid #999;box-shadow:none}body.print-export table{width:100%;min-width:0;table-layout:fixed;font-size:8px}body.print-export th,body.print-export td{padding:3px 4px;white-space:normal;overflow-wrap:anywhere;word-break:break-word}body.print-export .table-wrap{overflow:visible}body.print-export th:nth-child(1),body.print-export td:nth-child(1){width:5%}body.print-export th:nth-child(2),body.print-export td:nth-child(2){width:9%}body.print-export th:nth-child(3),body.print-export td:nth-child(3){width:25%}body.print-export th:nth-child(4),body.print-export td:nth-child(4),body.print-export th:nth-child(5),body.print-export td:nth-child(5),body.print-export th:nth-child(6),body.print-export td:nth-child(6),body.print-export th:nth-child(7),body.print-export td:nth-child(7){width:10%}body.print-export th:nth-child(8),body.print-export td:nth-child(8){width:21%}}
+
+/* Colorful polished New Entry form */
+#appMain>section:first-child{position:relative;overflow:visible;border:1px solid #dbeafe;background:linear-gradient(145deg,#ffffff 0%,#f0f9ff 48%,#f5f3ff 100%);box-shadow:0 8px 24px #0f172a12;padding:20px 22px}
+#appMain>section:first-child:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,#06b6d4,#6366f1,#a855f7)}
+#appMain>section:first-child h3{margin:0 0 18px;display:flex;align-items:center;gap:10px;color:#1e3a8a;font-size:20px;font-weight:800;letter-spacing:.1px}
+#appMain>section:first-child h3:before{content:"✦";display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;color:#fff;background:linear-gradient(135deg,#0ea5e9,#6366f1);box-shadow:0 4px 10px #6366f133;font-size:17px}
+#appMain>section:first-child .grid{gap:14px 12px}
+#appMain>section:first-child label{font-size:12px;font-weight:750;color:#475569;letter-spacing:.35px;text-transform:uppercase;margin-bottom:7px}
+#appMain>section:first-child input,#appMain>section:first-child select{background:#fff;border:1px solid #c7d2fe;border-radius:10px;padding:12px 13px;box-shadow:0 1px 3px #0f172a08;transition:border-color .15s,box-shadow .15s}
+#appMain>section:first-child input:focus,#appMain>section:first-child select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px #6366f126}
+#appMain>section:first-child #date{border-left:3px solid #0ea5e9}
+#appMain>section:first-child #restion{border-left:3px solid #8b5cf6}
+#appMain>section:first-child #balance{border-left:3px solid #64748b}
+#appMain>section:first-child #credit{border-left:3px solid #16a34a;color:#15803d;font-weight:700}
+#appMain>section:first-child #debit{border-left:3px solid #ef4444;color:#b91c1c;font-weight:700}
+#appMain>section:first-child #remark{border-left:3px solid #f59e0b}
+#appMain>section:first-child .total{display:inline-flex;align-items:center;gap:8px;margin:18px 0 4px;padding:10px 16px;border:1px solid #c4b5fd;border-radius:12px;background:linear-gradient(100deg,#eef2ff,#f5f3ff);color:#4338ca;font-size:21px}
+#appMain>section:first-child .save{margin-top:14px;padding:13px 18px;border-radius:11px;background:linear-gradient(100deg,#0ea5e9,#4f46e5,#7c3aed);box-shadow:0 5px 14px #4f46e533;letter-spacing:.25px}
+#appMain>section:first-child .save:hover{filter:brightness(1.05);transform:translateY(-1px)}
+@media(max-width:650px){#appMain>section:first-child{padding:16px 14px}#appMain>section:first-child h3{font-size:18px;margin-bottom:14px}#appMain>section:first-child .grid{gap:11px}#appMain>section:first-child .total{font-size:18px}}
+
+/* Requested New Entry layout: two rows, three fields each */
+@media(min-width:651px){#appMain>section:first-child .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:650px){#appMain>section:first-child .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:430px){#appMain>section:first-child .grid{grid-template-columns:1fr!important}}
+
+/* Premium Pooja Enterprises branding and real company logo */
+body{background:linear-gradient(180deg,#eff6ff 0%,#f8fafc 40%,#eef2ff 100%)}
+header{position:relative;isolation:isolate;overflow:hidden;min-height:150px;padding:22px clamp(16px,3vw,38px);background:linear-gradient(112deg,#075985 0%,#082f72 36%,#312e81 68%,#1d4ed8 100%);border-bottom:5px solid #fbbf24;box-shadow:0 8px 22px #0b2b6240}
+header:before{content:"";position:absolute;z-index:-1;width:44%;height:210%;right:-8%;top:-55%;transform:rotate(24deg);background:linear-gradient(90deg,#0ea5e955,#2563eb22);border-left:2px solid #fcd34d66}
+header:after{content:"";position:absolute;z-index:-1;left:0;bottom:-4px;width:100%;height:10px;background:linear-gradient(90deg,#fef3c7,#fbbf24,#fde68a);opacity:.95}
+.brand{gap:20px}.brand-mark{width:112px;height:112px;flex:0 0 112px;border-radius:50%;padding:5px;background:#fff;border:3px solid #dbeafe;box-shadow:0 5px 18px #02061755;overflow:hidden}.brand-mark img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.brand-copy{display:flex;flex-direction:column;gap:5px}.brand-name{font-size:clamp(28px,4.1vw,48px);font-weight:900;letter-spacing:.15px;line-height:1.08;color:#fff;text-shadow:0 2px 3px #02061755}.brand-name span{color:#fcd34d}.brand-subtitle{font-size:clamp(17px,2.1vw,27px);font-weight:800;letter-spacing:2.2px;color:#eaf2ff;text-transform:uppercase;margin-top:4px}.header-actions{gap:12px}.role-tag{background:#ffffff16;border:1px solid #bfdbfe75;color:#fff;font-size:12px;padding:9px 13px;border-radius:999px;box-shadow:inset 0 1px #ffffff22}#logout{background:linear-gradient(135deg,#fb7185,#be123c);color:#fff;border:1px solid #fecdd3;padding:11px 16px;border-radius:999px;box-shadow:0 3px 10px #88133766;font-weight:800}#logout:hover{filter:brightness(1.08)}
+main{padding:18px clamp(8px,1.4vw,20px)}.panel{border:1px solid #dbeafe;border-radius:17px;box-shadow:0 5px 18px #1e3a8a12}.panel h3{color:#0b3b82;font-weight:800}
+@media(max-width:650px){header{min-height:100px;padding:12px;gap:10px}.brand{gap:10px}.brand-mark{width:62px;height:62px;flex-basis:62px;padding:3px}.brand-name{font-size:clamp(18px,5vw,25px)}.brand-subtitle{font-size:11px;letter-spacing:1px}.header-actions{gap:5px;flex-wrap:wrap;justify-content:flex-end}.role-tag{font-size:9px;padding:5px 7px}#logout{font-size:11px;padding:7px 9px}}
+@media print{header{min-height:auto;padding:8px;background:white;color:#111;border-bottom:1px solid #aaa;box-shadow:none}header:before,header:after{display:none}.brand-mark{width:45px;height:45px;flex-basis:45px;border:1px solid #ddd;box-shadow:none}.brand-name{font-size:20px;color:#111;text-shadow:none}.brand-subtitle{font-size:11px;color:#333}}
+
+
+/* Admin edit is hidden: tap an entry row to edit it */
+@media (max-width: 760px){.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}table{min-width:720px}}
+
+/* Full-detail ledger PDF: include every saved entry across pages */
+@media print{
+ body.print-export .filter-tools,body.print-export .filter-row,body.print-export .backup-tools{display:none!important}
+ body.print-export #entries{display:block!important}
+ body.print-export .table-wrap{max-height:none!important;overflow:visible!important}
+ body.print-export table{table-layout:auto!important;min-width:0!important;width:100%!important;font-size:9px!important}
+ body.print-export th,body.print-export td{white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;padding:4px 5px!important}
+ body.print-export tr{break-inside:avoid;page-break-inside:avoid}
+ body.print-export thead{display:table-header-group}
+ body.print-export tbody{display:table-row-group}
+ body.print-export td:nth-child(3),body.print-export td:nth-child(8){min-width:90px}
+}
+
+
+/* Final header/PDF pagination correction */
+.brand-copy{align-items:center;text-align:center}
+.brand-name{font-size:14px!important;font-weight:700!important;letter-spacing:0!important;line-height:1.2!important}
+.brand-subtitle{font-size:14px!important;font-weight:700!important;letter-spacing:0!important;margin-top:2px!important}
+@media print{
+ @page{size:A4 landscape;margin:23mm 7mm 8mm}
+ body.print-export header{position:fixed!important;top:-17mm!important;left:0!important;right:0!important;height:15mm!important;min-height:0!important;padding:1mm 2mm!important;display:flex!important;justify-content:center!important;align-items:center!important;text-align:center!important;background:#fff!important;color:#111!important;border-bottom:1px solid #888!important;box-shadow:none!important;font-size:14px!important;font-weight:700!important}
+ body.print-export header .brand{width:100%!important;justify-content:center!important;gap:5mm!important}
+ body.print-export header .brand-mark{display:none!important}
+ body.print-export header .brand-copy{align-items:center!important;text-align:center!important}
+ body.print-export header .brand-name,body.print-export header .brand-subtitle{font-size:14px!important;font-weight:700!important;line-height:1.15!important;color:#111!important;text-shadow:none!important;letter-spacing:0!important}
+ body.print-export header .header-actions{display:none!important}
+ body.print-export main{padding-top:0!important}
+ body.print-export table{width:100%!important;table-layout:fixed!important;min-width:0!important;font-size:8px!important}
+ body.print-export th,body.print-export td{padding:3px 3px!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important}
+ body.print-export th:nth-child(1),body.print-export td:nth-child(1){width:4%!important}
+ body.print-export th:nth-child(2),body.print-export td:nth-child(2){width:10%!important}
+ body.print-export th:nth-child(3),body.print-export td:nth-child(3){width:9%!important}
+ body.print-export th:nth-child(4),body.print-export td:nth-child(4),body.print-export th:nth-child(5),body.print-export td:nth-child(5),body.print-export th:nth-child(6),body.print-export td:nth-child(6),body.print-export th:nth-child(7),body.print-export td:nth-child(7){width:11%!important}
+ body.print-export th:nth-child(8),body.print-export td:nth-child(8){width:25%!important}
+ body.print-export th:nth-child(9),body.print-export td:nth-child(9){width:8%!important}
+ body.print-export thead{display:table-header-group!important}
+ body.print-export tbody{display:table-row-group!important}
+ body.print-export tr{break-inside:avoid!important;page-break-inside:avoid!important}
+}
+
+/* Robust all-page ledger PDF print layout: repeated centered header and stable columns */
+@media print {
+  @page { size: A4 landscape; margin: 22mm 7mm 8mm 7mm; }
+  body.print-export { background:#fff !important; color:#111 !important; }
+  body.print-export header {
+    position: fixed !important; top: -19mm !important; left: 0 !important; right: 0 !important;
+    width: 100% !important; height: 16mm !important; min-height: 0 !important;
+    box-sizing: border-box !important; margin: 0 !important; padding: 1mm 2mm !important;
+    display:flex !important; justify-content:center !important; align-items:center !important;
+    text-align:center !important; background:#fff !important; color:#111 !important;
+    border-bottom: 1px solid #888 !important; box-shadow:none !important;
+    font-size:14px !important; font-weight:700 !important; z-index:9999 !important;
+  }
+  body.print-export header:before, body.print-export header:after { display:none !important; }
+  body.print-export header .brand { width:100% !important; display:flex !important; justify-content:center !important; align-items:center !important; gap:0 !important; }
+  body.print-export header .brand-mark, body.print-export header .header-actions { display:none !important; }
+  body.print-export header .brand-copy { display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; text-align:center !important; gap:0 !important; }
+  body.print-export header .brand-name, body.print-export header .brand-subtitle {
+    display:block !important; font-size:14px !important; font-weight:700 !important; line-height:1.15 !important;
+    color:#111 !important; text-shadow:none !important; letter-spacing:0 !important; margin:0 !important;
+  }
+  body.print-export main { max-width:none !important; width:100% !important; padding:0 !important; margin:0 !important; }
+  body.print-export main > section:first-child { display:none !important; }
+  body.print-export main > section:last-child { display:block !important; padding:0 !important; margin:0 !important; border:0 !important; box-shadow:none !important; }
+  body.print-export .backup-tools, body.print-export .filter-tools, body.print-export .filter-row,
+  body.print-export .delete-col, body.print-export .save, body.print-export .pdf-btn { display:none !important; }
+  body.print-export #entries, body.print-export .table-wrap { display:block !important; max-height:none !important; height:auto !important; overflow:visible !important; }
+  body.print-export table { width:100% !important; min-width:0 !important; table-layout:fixed !important; border-collapse:collapse !important; font-size:8px !important; margin:0 !important; }
+  body.print-export th, body.print-export td { box-sizing:border-box !important; padding:3px 3px !important; border:0.5px solid #aab3bd !important; white-space:normal !important; overflow-wrap:anywhere !important; word-break:normal !important; vertical-align:middle !important; }
+  body.print-export th { text-align:center !important; font-weight:700 !important; background:#e2e8f0 !important; color:#111 !important; }
+  body.print-export td:nth-child(1), body.print-export td:nth-child(2), body.print-export td:nth-child(3) { text-align:center !important; }
+  body.print-export td:nth-child(4), body.print-export td:nth-child(5), body.print-export td:nth-child(6), body.print-export td:nth-child(7) { text-align:right !important; }
+  body.print-export td:nth-child(8) { text-align:left !important; }
+  body.print-export .audit-print { display:block !important; font-size:7.5px !important; line-height:1.25 !important; margin-top:2px !important; white-space:normal !important; }
+  body.print-export th:nth-child(1), body.print-export td:nth-child(1) { width:5% !important; }
+  body.print-export th:nth-child(2), body.print-export td:nth-child(2) { width:12% !important; }
+  body.print-export th:nth-child(3), body.print-export td:nth-child(3) { width:12% !important; }
+  body.print-export th:nth-child(4), body.print-export td:nth-child(4) { width:12% !important; }
+  body.print-export th:nth-child(5), body.print-export td:nth-child(5) { width:12% !important; }
+  body.print-export th:nth-child(6), body.print-export td:nth-child(6) { width:12% !important; }
+  body.print-export th:nth-child(7), body.print-export td:nth-child(7) { width:12% !important; }
+  body.print-export th:nth-child(8), body.print-export td:nth-child(8) { width:23% !important; }
+  body.print-export thead { display:table-header-group !important; }
+  body.print-export tbody { display:table-row-group !important; }
+  body.print-export tr { break-inside:avoid !important; page-break-inside:avoid !important; }
+}
+
+
+/* Final requested formatting: 16px bold centered app and PDF masthead */
+header .brand-copy{align-items:center!important;text-align:center!important}
+header .brand-name,header .brand-subtitle{font-size:16px!important;font-weight:700!important;line-height:1.2!important;letter-spacing:0!important}
+@media print{
+ @page{size:A4 landscape;margin:24mm 7mm 9mm!important}
+ body.print-export header{position:fixed!important;top:-20mm!important;left:0!important;right:0!important;width:100%!important;height:16mm!important;min-height:0!important;display:flex!important;justify-content:center!important;align-items:center!important;padding:1mm 2mm!important;margin:0!important;box-sizing:border-box!important;background:#fff!important;color:#111!important;border-bottom:1px solid #777!important;font-size:16px!important;font-weight:700!important;z-index:9999!important}
+ body.print-export header .brand{width:100%!important;justify-content:center!important}
+ body.print-export header .brand-copy{align-items:center!important;text-align:center!important}
+ body.print-export header .brand-name,body.print-export header .brand-subtitle{font-size:16px!important;font-weight:700!important;color:#111!important;text-shadow:none!important;line-height:1.15!important}
+ body.print-export header .header-actions,body.print-export .delete-col{display:none!important}
+ body.print-export table{width:100%!important;table-layout:fixed!important;font-size:8.5px!important}
+ body.print-export th,body.print-export td{vertical-align:middle!important;text-align:left!important;overflow-wrap:anywhere!important;word-break:normal!important}
+ body.print-export th:nth-child(1),body.print-export td:nth-child(1){width:4%!important;text-align:center!important}
+ body.print-export th:nth-child(2),body.print-export td:nth-child(2){width:10%!important}
+ body.print-export th:nth-child(3),body.print-export td:nth-child(3){width:24%!important}
+ body.print-export th:nth-child(4),body.print-export td:nth-child(4),body.print-export th:nth-child(5),body.print-export td:nth-child(5),body.print-export th:nth-child(6),body.print-export td:nth-child(6),body.print-export th:nth-child(7),body.print-export td:nth-child(7){width:10%!important;text-align:right!important}
+ body.print-export th:nth-child(8),body.print-export td:nth-child(8){width:22%!important}
+ body.print-export thead{display:table-header-group!important}
+ body.print-export tr{break-inside:avoid!important;page-break-inside:avoid!important}
+ body.print-export .audit-print{display:block!important;font-size:8px!important;line-height:1.25!important;margin-top:3px!important}
+}
+
+/* Definitive PDF header fix: keep the company masthead in normal document flow.
+   Older Chrome/Chromium versions can place fixed print headers at the page bottom. */
+@media print {
+  @page { size: A4 landscape; margin: 9mm 7mm 8mm 7mm !important; }
+  html, body { height: auto !important; overflow: visible !important; }
+  body.print-export > header {
+    position: static !important; top: auto !important; left: auto !important; right: auto !important;
+    display: flex !important; width: 100% !important; height: auto !important; min-height: 0 !important;
+    margin: 0 0 5mm 0 !important; padding: 0 0 2mm 0 !important;
+    justify-content: center !important; align-items: center !important; text-align: center !important;
+    background: #fff !important; color: #111 !important; border: 0 !important;
+    border-bottom: 1px solid #777 !important; box-shadow: none !important;
+    transform: none !important; z-index: auto !important;
+  }
+  body.print-export > header .brand { width: 100% !important; justify-content: center !important; }
+  body.print-export > header .brand-mark,
+  body.print-export > header .header-actions { display: none !important; }
+  body.print-export > header .brand-copy { display: flex !important; flex-direction: column !important;
+    align-items: center !important; justify-content: center !important; text-align: center !important; }
+  body.print-export > header .brand-name,
+  body.print-export > header .brand-subtitle { display: block !important; color: #111 !important;
+    font-size: 16px !important; font-weight: 700 !important; line-height: 1.2 !important;
+    text-shadow: none !important; margin: 0 !important; }
+  body.print-export main { margin: 0 !important; padding: 0 !important; }
+}
+
+/* PDF table headings: one clean header row, positioned at the start of the ledger table. */
+@media print {
+ body.print-export #entries .table-wrap { display:block !important; overflow:visible !important; max-height:none !important; }
+ body.print-export #entries table { display:table !important; border-collapse:collapse !important; }
+ body.print-export #entries thead { display:table-header-group !important; }
+ body.print-export #entries thead tr { display:table-row !important; }
+ body.print-export #entries thead th { display:table-cell !important; }
+ body.print-export #entries thead .filter-row { display:none !important; }
+ body.print-export #entries tbody { display:table-row-group !important; }
+ body.print-export #entries thead { break-inside:avoid !important; page-break-inside:avoid !important; }
+}
+
+/* Final column-heading requirement: repeat the 16px bold heading row at the top of every PDF page. */
+@media print {
+  body.print-export #entries table { page-break-inside:auto !important; }
+  body.print-export #entries thead { display:table-header-group !important; }
+  body.print-export #entries thead tr:not(.filter-row) { display:table-row !important; }
+  body.print-export #entries thead tr:not(.filter-row) th {
+    display:table-cell !important;
+    font-size:16px !important;
+    font-weight:700 !important;
+    line-height:1.15 !important;
+    text-align:center !important;
+    vertical-align:middle !important;
+    padding:5px 3px !important;
+    background:#e2e8f0 !important;
+    color:#111 !important;
+    border:1px solid #8793a1 !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere !important;
+  }
+  body.print-export #entries thead .filter-row { display:none !important; }
+  body.print-export #entries tbody { display:table-row-group !important; }
+  body.print-export #entries tbody tr { break-inside:avoid !important; page-break-inside:avoid !important; }
+}
+
+/* FINAL FIX: prevent sticky table headings from being painted halfway down printed pages.
+   Keep the real table THEAD in normal flow so Chromium repeats it at each page top. */
+@media print {
+  @page { size: A4 landscape; margin: 10mm 7mm 8mm 7mm !important; }
+  html, body { height: auto !important; overflow: visible !important; }
+  body.print-export #entries .table-wrap {
+    display: block !important; height: auto !important; max-height: none !important;
+    overflow: visible !important; position: static !important;
+  }
+  body.print-export #entries table {
+    display: table !important; width: 100% !important; min-width: 0 !important;
+    table-layout: fixed !important; border-collapse: collapse !important;
+    page-break-inside: auto !important; break-inside: auto !important;
+    margin: 0 !important; font-size: 8.5px !important;
+  }
+  /* Critical: sticky headers cause the heading to float/repaint mid-page in Chrome print. */
+  body.print-export #entries thead,
+  body.print-export #entries thead tr,
+  body.print-export #entries thead th {
+    position: static !important; top: auto !important; bottom: auto !important;
+    transform: none !important; z-index: auto !important;
+  }
+  body.print-export #entries thead { display: table-header-group !important; }
+  body.print-export #entries thead tr { display: table-row !important; }
+  body.print-export #entries thead th {
+    display: table-cell !important; font-size: 16px !important; font-weight: 700 !important;
+    line-height: 1.12 !important; text-align: center !important; vertical-align: middle !important;
+    padding: 5px 3px !important; white-space: normal !important;
+    overflow-wrap: anywhere !important; word-break: normal !important;
+    background: #e2e8f0 !important; color: #111 !important;
+    border: 1px solid #8793a1 !important;
+  }
+  body.print-export #entries thead .filter-row { display: none !important; }
+  body.print-export #entries tbody { display: table-row-group !important; }
+  body.print-export #entries tbody tr {
+    break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  /* Keep all nine requested columns, including Action, in the PDF. */
+  body.print-export #entries th.delete-col,
+  body.print-export #entries td.delete-col { display: table-cell !important; }
+  body.print-export #entries td.delete-col button { display: none !important; }
+  body.print-export #entries th:nth-child(1), body.print-export #entries td:nth-child(1) { width: 5% !important; text-align:center !important; }
+  body.print-export #entries th:nth-child(2), body.print-export #entries td:nth-child(2) { width: 10% !important; }
+  body.print-export #entries th:nth-child(3), body.print-export #entries td:nth-child(3) { width: 22% !important; }
+  body.print-export #entries th:nth-child(4), body.print-export #entries td:nth-child(4),
+  body.print-export #entries th:nth-child(5), body.print-export #entries td:nth-child(5),
+  body.print-export #entries th:nth-child(6), body.print-export #entries td:nth-child(6),
+  body.print-export #entries th:nth-child(7), body.print-export #entries td:nth-child(7) { width: 9% !important; }
+  body.print-export #entries th:nth-child(8), body.print-export #entries td:nth-child(8) { width: 19% !important; }
+  body.print-export #entries th:nth-child(9), body.print-export #entries td:nth-child(9) { width: 8% !important; }
+}
+
+
+/* Requested branding and PDF footer */
+header .brand-copy{align-items:flex-start!important;text-align:left!important;gap:6px!important}
+header .brand-name{font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:24px!important;font-weight:900!important;letter-spacing:.7px!important;line-height:1.12!important;text-transform:uppercase!important}
+header .brand-name span{color:#fcd34d!important;text-shadow:0 2px 5px #02061766}
+header .brand-subtitle{font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:18px!important;font-weight:800!important;letter-spacing:2px!important}
+@media print{
+ body.print-export header .brand-copy{align-items:center!important;text-align:center!important}
+ body.print-export header .brand-name,body.print-export header .brand-name span{font-size:24px!important;font-family:'Trebuchet MS',Arial,sans-serif!important;font-weight:900!important;letter-spacing:.7px!important;color:#111!important;text-shadow:none!important}
+ body.print-export header .brand-subtitle{font-size:18px!important;font-weight:800!important;letter-spacing:2px!important;color:#333!important}
+}
+
+
+/* FINAL BRAND + PDF OUTPUT OVERRIDES */
+.brand-copy{align-items:flex-start!important;text-align:left!important;gap:5px!important}
+.brand-name{font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:28px!important;font-weight:900!important;letter-spacing:1px!important;line-height:1.12!important;text-transform:uppercase!important;text-shadow:0 2px 3px #0003}
+.brand-subtitle{font-size:18px!important;font-weight:800!important;letter-spacing:2px!important}
+@media print{
+ @page{size:A4 landscape;margin:12mm 7mm 14mm 7mm}
+ body.print-export>header{
+   position:static!important;display:flex!important;width:100%!important;height:auto!important;min-height:0!important;
+   margin:0 0 5mm!important;padding:0 0 3mm!important;box-sizing:border-box!important;
+   justify-content:center!important;align-items:center!important;background:#fff!important;color:#111!important;
+   border:0!important;border-bottom:1px solid #777!important;box-shadow:none!important;transform:none!important;
+ }
+ body.print-export>header .brand{display:flex!important;width:100%!important;justify-content:center!important;align-items:center!important;gap:4mm!important}
+ body.print-export>header .brand-mark{display:block!important;width:18mm!important;height:18mm!important;flex:0 0 18mm!important}
+ body.print-export>header .brand-mark img{width:100%!important;height:100%!important;object-fit:contain!important}
+ body.print-export>header .brand-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;text-align:left!important;gap:0!important}
+ body.print-export>header .brand-name,body.print-export>header .brand-name span{
+   display:inline!important;font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:28px!important;
+   font-weight:900!important;letter-spacing:1px!important;line-height:1.12!important;
+   color:#111!important;text-shadow:none!important;margin:0!important
+ }
+ body.print-export>header .brand-subtitle{display:none!important}
+ body.print-export>header .header-actions{display:none!important}
+ body.print-export main{margin:0!important;padding:0!important}
+ body.print-export main>section:first-child{display:none!important}
+ body.print-export main>section:last-child{display:block!important}
+ body.print-export .filter-tools,body.print-export .filter-row,body.print-export .backup-tools{display:none!important}
+ body.print-export #entries{display:block!important}
+ body.print-export .table-wrap{max-height:none!important;overflow:visible!important}
+ body.print-export #entries thead{display:table-header-group!important}
+ body.print-export #entries tr{break-inside:avoid!important;page-break-inside:avoid!important}
+}
+
+
+/* Verified final branding and PDF footer */
+header .brand{align-items:center!important}
+header .brand-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;text-align:left!important;gap:5px!important}
+header .brand-name,header .brand-name span{
+ font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:28px!important;
+ font-weight:900!important;letter-spacing:1px!important;line-height:1.12!important;
+}
+@media print{
+ @page{size:A4 landscape;margin:12mm 7mm 18mm 7mm}
+ body.print-export header .brand{justify-content:center!important;gap:5mm!important}
+ body.print-export header .brand-copy{align-items:flex-start!important;text-align:left!important}
+ body.print-export header .brand-name,body.print-export header .brand-name span{
+  font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:28px!important;
+  font-weight:900!important;letter-spacing:1px!important;color:#111!important;text-shadow:none!important
+ }
+ body.print-export header .brand-subtitle{display:none!important}
+ body.print-export header .header-actions{display:none!important}
+}
+
+
+.pdf-print-footer{display:none}
+@media print{
+ @page{size:A4 landscape;margin:12mm 7mm 18mm 7mm}
+ body.print-export .pdf-print-footer{
+  display:block!important;position:fixed!important;left:0!important;right:0!important;bottom:-13mm!important;
+  text-align:center!important;white-space:nowrap!important;background:#fff!important;color:#111!important;
+  font:700 9px Arial,sans-serif!important;padding:2mm 0!important;border-top:1px solid #bbb!important;
+  z-index:999999!important;
+ }
+ body.print-export header .brand-name,body.print-export header .brand-name span{
+  font-family:Trebuchet MS,Arial,sans-serif!important;font-size:28px!important;font-weight:900!important;
+  letter-spacing:1px!important;color:#111!important;text-shadow:none!important;
+ }
+}
+
+
+/* DEFINITIVE 30px BRAND AND PRINT FOOTER */
+header .brand-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;text-align:left!important}
+header .brand-name,header .brand-name span{
+ font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:30px!important;
+ font-weight:900!important;letter-spacing:1.2px!important;line-height:1.1!important;
+ text-transform:uppercase!important;
+}
+.pdf-print-footer{display:none!important}
+@media print{
+ @page{size:A4 landscape;margin:20mm 8mm 20mm 8mm}
+ body.print-export header .brand-name,body.print-export header .brand-name span{
+  font-family:'Trebuchet MS',Arial,sans-serif!important;font-size:30px!important;
+  font-weight:900!important;letter-spacing:1.2px!important;line-height:1.1!important;
+  color:#111!important;text-shadow:none!important;text-transform:uppercase!important;
+ }
+ body.print-export .pdf-print-footer{
+  display:block!important;position:fixed!important;left:0!important;right:0!important;
+  bottom:-16mm!important;min-height:7mm!important;padding:1mm 0!important;
+  background:#fff!important;border-top:1px solid #888!important;
+  color:#111!important;text-align:center!important;white-space:nowrap!important;
+  font:700 9px Arial,sans-serif!important;z-index:2147483647!important;
+ }
+ body.print-export .pdf-print-footer:after{
+  content:"   |   Page " counter(page,decimal-leading-zero) " of " counter(pages,decimal-leading-zero);
+ }
+}
+
+
+/* Main application header: 48px company name beside logo */
+body:not(.print-export) header .brand{display:flex!important;align-items:center!important;gap:16px!important}
+body:not(.print-export) header .brand-copy{display:flex!important;align-items:flex-start!important;justify-content:center!important;text-align:left!important}
+body:not(.print-export) header .brand-name,body:not(.print-export) header .brand-name span{font-family:Trebuchet MS,Arial,sans-serif!important;font-size:48px!important;font-weight:900!important;letter-spacing:1.4px!important;line-height:1.08!important}
+
+</style>
+</head>
+<body>
+<div id="loginScreen"><div class="login-card"><h2>Balance Ledger Login</h2><p>Enter password to access the app</p><label for="appPassword">Password</label><input id="appPassword" type="password" autocomplete="current-password" placeholder="Enter app password"><button id="loginBtn">Login</button><div id="loginError" role="alert"></div></div></div>
+<header><div class="brand"><div class="brand-mark" aria-label="Pooja Enterprises logo"><img src="data:image/jpeg;base64,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" alt="Pooja Enterprises logo"></div><div class="brand-copy"><div class="brand-name" style="font-family:Trebuchet MS,Arial,sans-serif!important;font-size:48px!important;font-weight:900!important;letter-spacing:1.2px!important;line-height:1.1!important;text-transform:uppercase!important;">POOJA <span style="font-size:48px!important;font-weight:900!important;letter-spacing:1.2px!important;">ENTERPRISES</span></div><div class="brand-subtitle">Balance Ledger</div></div></div><div class="header-actions"><span id="roleTag" class="role-tag"></span><button id="logout">Logout</button></div></header>
+<main id="appMain" style="display:none">
+<section class="panel">
+<h3>New Entry</h3>
+<div class="grid">
+<div><label>Date</label><input id="date" type="date"></div>
+<div><label>Transaction</label><select id="restion"><option value="Cash">Cash</option><option value="Online">Online</option><option value="UPI">UPI</option><option value="Cheque">Cheque</option><option value="Bank Transfer">Bank Transfer</option></select></div>
+<div><label>Balance (Opening)</label><input id="balance" type="number" step="0.01" value="0"></div>
+<div><label>Credit (+)</label><input id="credit" type="number" step="0.01" value="0"></div>
+<div><label>Debit (−)</label><input id="debit" type="number" step="0.01" value="0"></div>
+<div><label>Remark</label><input id="remark" placeholder="Remark"></div>
+</div>
+<div class="total">Total: ₹ <span id="total">0.00</span></div>
+
+<button class="save" id="save">Save Entry</button>
+<button type="button" class="secondary" id="cancelEdit" style="display:none;margin-left:8px">Cancel Edit</button>
+</section>
+<section class="panel">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h3>Saved Entries — Pooja Enterprises</h3></div>
+<div class="backup-tools" style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0">
+<button type="button" class="secondary" id="backupDownload">Download Backup</button>
+<button type="button" class="secondary" id="backupRestore">Restore Backup</button>
+<input type="file" id="backupFile" accept=".json,application/json" style="display:none">
+</div>
+<button class="pdf-btn" id="pdf">Save All Data as PDF</button>
+<div id="entries"><div class="empty">No entries saved yet.</div></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let appRole=null, currentUser='';
+let editingIndex=null;
+const roleMap={'admin@2026':{role:'superadmin',name:'Admin'},'Manish@2026':{role:'editor',name:'Manish'},'Niraj@2026':{role:'editor',name:'Niraj'},'Pooja@2026':{role:'readonly',name:'Pooja'}};
+function enterApp(role,name){appRole=role;currentUser=name;$('loginScreen').style.display='none';$('appMain').style.display='block';$('roleTag').textContent=role==='superadmin'?'SUPER ADMIN':role==='editor'?'EDIT / ENTRY':'READ ONLY';
+ const editable=role==='superadmin'||role==='editor';['date','restion','balance','credit','debit','remark','save'].forEach(id=>$(id).disabled=!editable);
+ $('save').style.display=editable?'':'none';$('backupRestore').style.display=role==='superadmin'?'':'none';$('logout').style.display='';}
+$('loginBtn').addEventListener('click',()=>{const p=$('appPassword').value;const account=roleMap[p];if(account){enterApp(account.role,account.name);$('loginError').textContent='';}else{$('loginError').textContent='Incorrect password. Please try again.';$('appPassword').select();}});
+$('appPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
+$('logout').addEventListener('click',()=>{appRole=null;currentUser='';$('appMain').style.display='none';$('loginScreen').style.display='flex';$('appPassword').value='';$('roleTag').textContent='';});
+$('date').value=new Date().toISOString().slice(0,10);
+function total(){return Number($('balance').value||0)+Number($('credit').value||0)-Number($('debit').value||0)}
+function calc(){$('total').textContent=total().toFixed(2)}
+['balance','credit','debit'].forEach(id=>$(id).addEventListener('input',calc));
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let entries=[];try{entries=JSON.parse(localStorage.getItem('balance-ledger')||'[]')}catch(e){}
+const initialEntries=[{"date": "2026-07-24", "restion": "Balance", "balance": 27417, "credit": 0, "debit": 0, "total": 27417, "remark": ""}, {"date": "2026-07-24", "restion": "Emcure Payment Bill No.: 1055070 and 1055071", "balance": 0, "credit": 182310, "debit": 0, "total": 209727, "remark": ""}, {"date": "2026-07-24", "restion": "GST -CPIN 26072400822251", "balance": 0, "credit": 0, "debit": 41952, "total": 167775, "remark": ""}, {"date": "2026-07-24", "restion": "Jigar panchal Return IMPS NO.: 620550343804", "balance": 0, "credit": 0, "debit": 142773, "total": 25002, "remark": ""}, {"date": "2026-07-26", "restion": "Harsh Bhai ne.: 620751084658", "balance": 0, "credit": 0, "debit": 1500, "total": 23502, "remark": ""}, {"date": "2026-08-20", "restion": "Intas Paymant . SCBL0036001 PO No.: 860030689", "balance": 0, "credit": 114000, "debit": 0, "total": 137502, "remark": ""}, {"date": "2026-08-20", "restion": "Yashvant Borshaniya PO No.: 4500414009", "balance": 0, "credit": 0, "debit": 9000, "total": 128502, "remark": ""}, {"date": "2026-08-07", "restion": "Manish", "balance": 0, "credit": 2500, "debit": 0, "total": 131002, "remark": ""}, {"date": "2026-08-20", "restion": "Dayalal 2500 manish + 7500 Poojaenter PO No.: 860030989 and 860031625", "balance": 0, "credit": 0, "debit": 10000, "total": 121002, "remark": ""}, {"date": "2026-08-20", "restion": "Narendra Patel PO No.: 860031626", "balance": 0, "credit": 0, "debit": 2500, "total": 118502, "remark": ""}, {"date": "2020-08-21", "restion": "GST -CPIN 26072400192466", "balance": 0, "credit": 0, "debit": 21599, "total": 96903, "remark": ""}, {"date": "2026-08-22", "restion": "Worldwide Cartride IMPS NO.: 623428124209", "balance": 0, "credit": 0, "debit": 42980, "total": 53923, "remark": ""}, {"date": "2026-08-22", "restion": "RTR Ribbon IMPS NO.: 623428124386", "balance": 0, "credit": 0, "debit": 33394, "total": 20529, "remark": ""}, {"date": "2026-08-26", "restion": "Emcure UTIB0001636 Payment Bill No.: 1055072", "balance": 0, "credit": 460200, "debit": 0, "total": 480729, "remark": ""}, {"date": "2026-08-26", "restion": "Jigar panchal Return IMPS NO.: 623829666589", "balance": 0, "credit": 0, "debit": 227227, "total": 253502, "remark": ""}, {"date": "2026-08-26", "restion": "Dilip Panchal IMPS NO.: 623829707868 (Bill No.: #1004)", "balance": 0, "credit": 0, "debit": 4000, "total": 249502, "remark": ""}, {"date": "2026-09-05", "restion": "ND Enterprise (Courier Emcure)", "balance": 0, "credit": 0, "debit": 2720, "total": 246782, "remark": ""}, {"date": "2026-09-06", "restion": "Worldwide Cartride IMPS NO.: 624934921452", "balance": 0, "credit": 0, "debit": 17292, "total": 229490, "remark": ""}, {"date": "2026-09-07", "restion": "Dilip Panchal IMPS NO.: 625035681736 (Bill No.: #1007)", "balance": 0, "credit": 0, "debit": 4000, "total": 225490, "remark": ""}, {"date": "2026-09-09", "restion": "Phone sim Recharge Niraj and manish one years recharge", "balance": 0, "credit": 0, "debit": 3760, "total": 221730, "remark": ""}, {"date": "2026-09-10", "restion": "Intas Paymant.PO No.: 860030989", "balance": 0, "credit": 57000, "debit": 2, "total": 278728, "remark": ""}, {"date": "2026-09-10", "restion": "Intas Paymant.PO No.: 269920711", "balance": 0, "credit": 45600, "debit": 0, "total": 324328, "remark": ""}, {"date": "2026-09-14", "restion": "Niraj Panchal IMPS Reference No: 625738637231", "balance": 0, "credit": 0, "debit": 10000, "total": 314328, "remark": ""}, {"date": "2026-09-20", "restion": "1L Yogendra sir ne aapva IMPS Reference No: 626340799529", "balance": 0, "credit": 0, "debit": 100000, "total": 214328, "remark": ""}, {"date": "2026-09-20", "restion": "GST", "balance": 0, "credit": 0, "debit": 122, "total": 214206, "remark": ""}, {"date": "2026-09-23", "restion": "Emcure UTIB0001636 Payment Bill No.: 1055073", "balance": 0, "credit": 113280, "debit": 0, "total": 327486, "remark": ""}, {"date": "2026-09-27", "restion": "Novaink cartrage vastral IMPS Reference No: F62701331587", "balance": 0, "credit": 0, "debit": 20650, "total": 306836, "remark": ""}, {"date": "2026-09-27", "restion": "Novaink cartrage vastral IMPS Reference No: 627043672783", "balance": 0, "credit": 0, "debit": 26250, "total": 280586, "remark": ""}, {"date": "2026-09-28", "restion": "Emcure UTIB0001636 Payment Bill No.: 1055075 and 76", "balance": 0, "credit": 85845, "debit": 0, "total": 366431, "remark": ""}, {"date": "2026-09-28", "restion": "manish and niraj", "balance": 0, "credit": 0, "debit": 166000, "total": 200431, "remark": ""}, {"date": "2026-09-29", "restion": "Emcure UTIB0001636 Payment Bill No.: 1055074", "balance": 0, "credit": 56640, "debit": 0, "total": 257071, "remark": ""}, {"date": "2026-10-02", "restion": "Gravity Printech india PLT", "balance": 0, "credit": 0, "debit": 28497, "total": 228574, "remark": ""}, {"date": "2026-10-07", "restion": "Udepur aurika reshort manish niraj family", "balance": 0, "credit": 0, "debit": 24190, "total": 204384, "remark": ""}, {"date": "2026-10-12", "restion": "courier Emcure", "balance": 0, "credit": 0, "debit": 190, "total": 204194, "remark": ""}, {"date": "2026-10-19", "restion": "GST", "balance": 0, "credit": 0, "debit": 21438, "total": 182756, "remark": ""}, {"date": "2026-10-21", "restion": "Emcure Payment Bill No.: 1055077 and 78", "balance": 0, "credit": 233640, "debit": 0, "total": 416396, "remark": ""}, {"date": "2026-10-22", "restion": "Intas Payment Bill No.: 1005 and 1006", "balance": 0, "credit": 85500, "debit": 0, "total": 501896, "remark": ""}, {"date": "2026-10-23", "restion": "manish and niraj", "balance": 0, "credit": 0, "debit": 310000, "total": 191896, "remark": ""}];
+if(!entries.length){entries=initialEntries;}
+// Assign permanent serial numbers once to legacy rows; never renumber when dates change.
+let nextLedgerSerial=1;
+entries.forEach(e=>{const n=Number(e.serialNo);if(Number.isInteger(n)&&n>0)nextLedgerSerial=Math.max(nextLedgerSerial,n+1);});
+entries.forEach(e=>{if(!(Number.isInteger(Number(e.serialNo))&&Number(e.serialNo)>0)){e.serialNo=nextLedgerSerial++;}else{e.serialNo=Number(e.serialNo);}});
+sortEntriesDateWise();
+// Keep Sr. No. continuous after date-wise sorting (no gaps after a deletion).
+function renumberLedger(){
+ entries.forEach((entry,index)=>{entry.serialNo=index+1;});
+ nextLedgerSerial=entries.length+1;
+}
+renumberLedger();
+localStorage.setItem('balance-ledger',JSON.stringify(entries));
+let filterValues=['','','','','','','','',''];
+let currentPage=1; const pageSize=20;
+function dateDisplay(value){const parts=String(value||'').split('-');return parts.length===3?parts[2]+'/'+parts[1]+'/'+parts[0]:String(value||'')}
+function render(){
+ const el=$('entries');
+ if(!entries.length){el.innerHTML='<div class="empty">No entries saved yet.</div>';return}
+ const shown=entries.map((e,i)=>({...e,_entryIndex:i,_ledgerSerial:Number(e.serialNo)||i+1})).filter(e=>{const vals=[e._ledgerSerial,dateDisplay(e.date),e.restion,e.balance,e.credit,e.debit,e.total,e.remark+' '+(e.createdBy||'')+' '+(e.editedBy||''),''];return vals.every((v,i)=>{const q=filterValues[i].trim().toLowerCase();return !q||String(v??'').toLowerCase().includes(q)})});
+ const pageCount=Math.max(1,Math.ceil(shown.length/pageSize));currentPage=Math.min(currentPage,pageCount);const pageRows=document.body.classList.contains('print-export')?shown:shown.slice((currentPage-1)*pageSize,currentPage*pageSize);
+ const isPrint=document.body.classList.contains('print-export');
+ const columnHead='<tr><th>Sr. No.</th><th>Date</th><th>Transaction</th><th>Balance</th><th>Credit</th><th>Debit</th><th>Total</th><th>Remark / Audit</th><th class="delete-col">Action</th></tr>';
+ const filterHead=isPrint?'':'<tr class="filter-row">'+['Sr. No.','Date (dd/mm/yyyy)','Transaction','Balance','Credit','Debit','Total','Remark / Audit','Action'].map((n,i)=>'<td><input aria-label="Filter '+n+'" placeholder="Filter '+n+'" data-filter="'+i+'" value="'+esc(filterValues[i]||'')+'"></td>').join('')+'</tr>';
+ el.innerHTML='<div class="filter-tools"><button class="secondary" id="clearFilters">Clear Filters</button><span class="filter-count">Showing '+shown.length+' of '+entries.length+' entries | Page '+currentPage+' of '+pageCount+'</span></div><div class="table-wrap"><table><thead>'+columnHead+filterHead+'</thead><tbody>'+pageRows.map(e=>`<tr data-row-edit="${e._entryIndex}" tabindex="0" role="button" aria-label="Tap to edit this entry" title="Tap to edit this entry" class="${Number(e.debit)>0 ? "debit-row" : Number(e.credit)>0 ? "credit-row" : ""}"><td>${e._ledgerSerial}</td><td>${esc(dateDisplay(e.date))}</td><td>${esc(e.restion)}</td><td>${Number(e.balance) ? '₹'+Number(e.balance).toFixed(2) : ''}</td><td>${Number(e.credit) ? '₹'+Number(e.credit).toFixed(2) : ''}</td><td>${Number(e.debit) ? '₹'+Number(e.debit).toFixed(2) : ''}</td><td><b>₹${Number(e.total).toFixed(2)}</b></td><td>${esc(e.remark)}<div class="audit-print"><b>Entry By:</b> ${esc(e.createdBy||'Legacy')}<br><b>Edit By:</b> ${esc(e.editedBy||'—')}</div></td><td class="delete-col">${appRole==='superadmin'?`<button type="button" class="secondary delete-entry" data-delete="${e._entryIndex}">Delete</button>`:'—'}</td></tr>`).join('')+'</tbody></table></div><div class="filter-tools"><button class="secondary" id="prevPage" '+(currentPage===1?'disabled':'')+'>Previous</button><button class="secondary" id="nextPage" '+(currentPage===pageCount?'disabled':'')+'>Next</button></div>';
+ $('prevPage').addEventListener('click',()=>{currentPage--;render()});$('nextPage').addEventListener('click',()=>{currentPage++;render()});
+ el.querySelectorAll('[data-filter]').forEach(inp=>inp.addEventListener('input',()=>{const idx=Number(inp.dataset.filter), val=inp.value, start=inp.selectionStart, end=inp.selectionEnd;filterValues[idx]=val;currentPage=1;render();const next=el.querySelector('[data-filter="'+idx+'"]');if(next){next.focus();try{next.setSelectionRange(start,end)}catch(e){}}}));
+ $('clearFilters').addEventListener('click',()=>{filterValues=['','','','','','','','',''];currentPage=1;render()});
+ // Triple-tap/click anywhere in a ledger row to open the entry for editing.
+ const tbody=el.querySelector('tbody');
+ if(tbody){
+   let lastTapRow=null, tapCount=0, tapTimer=null;
+   const activateRow=(ev)=>{
+     const del=ev.target.closest('[data-delete]');if(del){ev.preventDefault();ev.stopPropagation();if(appRole!=='superadmin')return;const idx=Number(del.getAttribute('data-delete'));if(Number.isInteger(idx)&&entries[idx]&&confirm('Delete this ledger entry permanently?')){entries.splice(idx,1);persist();}return;}
+     if(appRole!=='superadmin'&&appRole!=='editor')return;
+     const row=ev.target.closest('tr[data-row-edit]');
+     if(!row || !tbody.contains(row))return;
+     // Ignore accidental taps on filter controls or interactive elements.
+     if(ev.target.closest('input,button,a,select,textarea'))return;
+     if(lastTapRow===row) tapCount++; else {lastTapRow=row;tapCount=1;}
+     if(tapTimer) clearTimeout(tapTimer);
+     if(tapCount>=3){tapCount=0;lastTapRow=null;startEdit(Number(row.getAttribute('data-row-edit')));}
+     else tapTimer=setTimeout(()=>{tapCount=0;lastTapRow=null;},850);
+   };
+   tbody.addEventListener('click',activateRow);
+   tbody.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){activateRow(ev);}});
+ }
+
+}
+function startEdit(index){
+ if((appRole!=='superadmin'&&appRole!=='editor')||!Number.isInteger(index)||!entries[index])return;
+ const e=entries[index];editingIndex=index;$('date').value=e.date||'';
+ const tx=$('restion');if(![...tx.options].some(o=>o.value===e.restion)){const opt=document.createElement('option');opt.value=e.restion;opt.textContent=e.restion;tx.appendChild(opt);}tx.value=e.restion;
+ $('balance').value=e.balance??0;$('credit').value=e.credit??0;$('debit').value=e.debit??0;$('remark').value=e.remark||'';calc();$('save').textContent='Update Entry';$('cancelEdit').style.display='inline-block';$('appMain').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function cancelEdit(){editingIndex=null;$('save').textContent='Save Entry';$('cancelEdit').style.display='none';$('date').value=new Date().toISOString().slice(0,10);$('restion').value='Cash';$('balance').value=entries[0]?.total||0;$('credit').value=0;$('debit').value=0;$('remark').value='';calc();}
+$('cancelEdit').addEventListener('click',cancelEdit);
+function dateSortKey(value){
+ const raw=String(value||'').trim();
+ let m=raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+ if(m)return Number(m[1])*10000+Number(m[2])*100+Number(m[3]);
+ m=raw.match(/^(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})$/);
+ if(m)return Number(m[3])*10000+Number(m[2])*100+Number(m[1]);
+ return 99999999;
+}
+function sortEntriesDateWise(){
+ // Keep dates chronological; when multiple entries share a date, show
+ // their permanent ledger serial numbers in ascending order (39 before 40).
+ entries=entries.map((e,i)=>({...e,_sortOrder:i,_dateKey:dateSortKey(e.date)}))
+  .sort((a,b)=>a._dateKey-b._dateKey||
+    (Number(a.serialNo)||0)-(Number(b.serialNo)||0)||
+    a._sortOrder-b._sortOrder)
+  .map(({_sortOrder,_dateKey,...e})=>e);
+}
+function persist(){
+ let maxSerial=0;entries.forEach(e=>{const n=Number(e.serialNo);if(Number.isInteger(n)&&n>maxSerial)maxSerial=n;});
+ entries.forEach(e=>{if(!(Number.isInteger(Number(e.serialNo))&&Number(e.serialNo)>0))e.serialNo=++maxSerial;});
+ nextLedgerSerial=Math.max(nextLedgerSerial,maxSerial+1);
+ sortEntriesDateWise();
+ renumberLedger();
+ localStorage.setItem('balance-ledger',JSON.stringify(entries));render()
+}
+// Export/import a complete portable backup for moving data between devices.
+$('backupDownload').addEventListener('click',()=>{
+ try{
+  const backup={app:'Pooja Enterprises Balance Ledger',version:1,createdAt:new Date().toISOString(),entries:entries};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='Pooja_Enterprises_Ledger_Backup_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+ }catch(err){alert('Backup could not be created: '+(err?.message||err));}
+});
+$('backupRestore').addEventListener('click',()=>{
+ if(appRole!=='superadmin'){alert('Only Super Admin can restore a backup.');return;}
+ $('backupFile').click();
+});
+$('backupFile').addEventListener('change',async ev=>{
+ const file=ev.target.files&&ev.target.files[0];if(!file)return;
+ try{
+  const parsed=JSON.parse(await file.text());
+  const imported=Array.isArray(parsed)?parsed:parsed.entries;
+  if(!Array.isArray(imported)||!imported.every(e=>e&&typeof e==='object'&&typeof e.date==='string'&&typeof e.restion==='string'))
+   throw new Error('This file is not a valid Balance Ledger backup.');
+  if(!confirm('Current ledger data will be replaced by '+imported.length+' backup entries. Continue?'))return;
+  entries=imported.map(e=>({date:e.date,restion:e.restion,serialNo:Number(e.serialNo)||undefined,balance:Number(e.balance)||0,credit:Number(e.credit)||0,debit:Number(e.debit)||0,total:Number(e.total)||0,remark:String(e.remark||''),createdBy:String(e.createdBy||'Legacy'),editedBy:String(e.editedBy||'—')}));
+  persist();alert('Backup restored successfully. '+entries.length+' entries loaded.');
+ }catch(err){alert('Restore failed: '+(err?.message||err));}
+ finally{ev.target.value='';}
+});
+$('pdf').addEventListener('click',()=>{
+ const btn=$('pdf');
+ if(!entries.length){alert('No saved entries to export.');return;}
+ const oldFilters=[...filterValues];
+ btn.disabled=true;btn.textContent='Opening print preview…';
+ // Export the complete ledger, not just the visible 20-row page or filtered results.
+ filterValues=['','','','','','','','',''];currentPage=1;
+ document.body.style.setProperty('--pdf-export-date',new Date().toLocaleDateString('en-GB'));
+ document.body.style.setProperty('--pdf-export-user',JSON.stringify(currentUser||'Unknown'));
+ document.body.classList.add('print-export');render();
+ const pdfFooter=document.createElement('div');
+ pdfFooter.className='pdf-print-footer';
+ pdfFooter.textContent='Date: '+new Date().toLocaleDateString('en-GB')+'   |   Login: '+(currentUser||'Unknown');
+ document.body.appendChild(pdfFooter);
+ const cleanup=()=>{
+  if(pdfFooter&&pdfFooter.parentNode)pdfFooter.parentNode.removeChild(pdfFooter);document.body.classList.remove('print-export');document.body.style.removeProperty('--pdf-export-date');document.body.style.removeProperty('--pdf-export-user');filterValues=oldFilters;currentPage=1;render();
+  btn.disabled=false;btn.textContent='Save All Data as PDF';window.removeEventListener('afterprint',cleanup);
+ };
+ window.addEventListener('afterprint',cleanup);
+ try{window.print();}catch(err){cleanup();alert('Print dialog did not open: '+(err?.message||err));}
+ setTimeout(cleanup,120000);
+});
+$('save').addEventListener('click',()=>{
+ if(appRole!=='superadmin'&&appRole!=='editor')return;
+ const nowUser=currentUser||'Unknown';
+ const e={date:$('date').value,restion:$('restion').value,balance:Number($('balance').value||0),credit:Number($('credit').value||0),debit:Number($('debit').value||0),total:total(),remark:$('remark').value};
+ if(editingIndex!==null){const old=entries[editingIndex]||{};e.serialNo=Number(old.serialNo)||undefined;e.createdBy=old.createdBy||nowUser;e.editedBy=nowUser;entries[editingIndex]=e;editingIndex=null;persist();alert('Entry updated successfully.');cancelEdit();}
+ else{e.serialNo=nextLedgerSerial++;e.createdBy=nowUser;e.editedBy='—';entries.unshift(e);persist();$('restion').value='';$('balance').value=e.total;$('credit').value=0;$('debit').value=0;$('remark').value='';calc();}
+});
+
+
+calc();render();
+</script>
+</body>
+</html>
